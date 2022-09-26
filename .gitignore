@@ -1,11 +1,12 @@
 /node_modules/
 /lib/
+/dist/
 /test/
 custom-elements.json
 # top level source
-my-element.js
-my-element.js.map
-my-element.d.ts
-my-element.d.ts.map
+vocechat-widget.js
+vocechat-widget.js.map
+vocechat-widget.d.ts
+vocechat-widget.d.ts.map
 # only generated for size check
-my-element.bundled.js
+vocechat-widget.bundled.js

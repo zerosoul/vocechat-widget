@@ -31,16 +31,14 @@
   },
   "overrides": [
     {
-      "files": ["rollup.config.js", "web-test-runner.config.js"],
+      "files": ["rollup.config.js"],
       "env": {
         "node": true
       }
     },
     {
       "files": [
-        "*_test.ts",
         "**/custom_typings/*.ts",
-        "packages/labs/ssr/src/test/integration/tests/**",
         "packages/labs/ssr/src/lib/util/parse5-utils.ts"
       ],
       "rules": {

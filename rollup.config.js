@@ -1,18 +1,15 @@
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
+
 
 import summary from 'rollup-plugin-summary';
-import {terser} from 'rollup-plugin-terser';
+import { terser } from 'rollup-plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
+import InlineSvg from 'rollup-plugin-inline-svg';
 
 export default {
-  input: 'my-element.js',
+  input: 'vocechat-widget.js',
   output: {
-    file: 'my-element.bundled.js',
+    file: 'vocechat-widget.bundled.js',
     format: 'esm',
   },
   onwarn(warning) {
@@ -21,7 +18,8 @@ export default {
     }
   },
   plugins: [
-    replace({'Reflect.decorate': 'undefined'}),
+    InlineSvg(),
+    replace({ 'Reflect.decorate': 'undefined' }),
     resolve(),
     terser({
       ecma: 2017,

@@ -11,7 +11,7 @@ filed in that repo.
 Install dependencies:
 
 ```bash
-npm i
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm i
 ```
 
 ## Build
