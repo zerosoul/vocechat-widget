@@ -1,6 +1,9 @@
 import {LitElement, html, css} from 'lit';
-import {cache} from 'lit/directives/cache.js';
+// import {cache} from 'lit/directives/cache.js';
 import {customElement, property} from 'lit/decorators.js';
+import {unsafeSVG} from 'lit/directives/unsafe-svg.js';
+import './vocechat-chatbox';
+import {ICON_CHAT, ICON_CLOSE_CHAT} from './constants';
 // import wtf from './assets/add.svg';
 @customElement('vocechat-widget')
 export class VoceChatWidget extends LitElement {
@@ -10,36 +13,48 @@ export class VoceChatWidget extends LitElement {
     //   console.log('wtf');
     // });
   }
+
   static override styles = css`
     :host {
-      display: flex;
       position: fixed;
-      bottom: 15px;
-      right: 15px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      transition: all 0.3s ease-in-out;
     }
-    .toggler {
-      display: block;
-      width: 50px;
-      height: 50px;
-      background: none;
-      border-radius: 50%;
-      border: 1px solid #eee;
-      cursor: pointer;
-      font-size: 24px;
-      /* &:hover {
-        background-color: red;
-      } */
+    :host(:hover) {
+      background-color: #cccccc50;
     }
     .wrapper {
-      position: relative;
-      width: 672px;
-      height: 328px;
-      max-height: 328px;
-      min-width: 672px;
-      padding: 24px;
-      padding-top: 0;
-      border-radius: 32px;
-      background-color: #f7f7f9;
+      position: absolute;
+      right: 15px;
+      bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .wrapper .toggler {
+      pointer-events: auto;
+      display: block;
+      padding: 8px;
+      width: 60px;
+      height: 60px;
+      background: none;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 24px;
+      transition: transform 0.3s ease-out;
+    }
+    .wrapper .toggler:hover {
+      transform: translateY(-10px);
+      background-color: #eeeeee50;
+    }
+    .wrapper .toggler svg {
+      width: 100%;
+      height: 100%;
     }
   `;
 
@@ -47,17 +62,20 @@ export class VoceChatWidget extends LitElement {
   visible = false;
 
   override render() {
-    return html`${cache(
-      this.visible
-        ? html`<div class="wrapper">333</div>`
-        : html`<button class="toggler" @click=${this._visibleHandler}>
-            v
-          </button>`
-    )} `;
+    return html`
+      <aside class="wrapper">
+        <vocechat-chatbox
+          class="${this.visible ? 'visible' : ''}"
+        ></vocechat-chatbox>
+        <button class="toggler" @click=${this._toggleVisibleHandler}>
+          ${this.visible ? unsafeSVG(ICON_CLOSE_CHAT) : unsafeSVG(ICON_CHAT)}
+        </button>
+      </aside>
+    `;
   }
 
-  private _visibleHandler() {
-    this.visible = true;
+  private _toggleVisibleHandler() {
+    this.visible = !this.visible;
     // this.dispatchEvent(new CustomEvent('count-changed'));
   }
 }

@@ -8,10 +8,32 @@
   <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
   <script src="../node_modules/lit/polyfill-support.js"></script>
   <script type="module" src="../dist/vocechat-widget.js"></script>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
 
+    main {
+      color: #fff;
+      background-color: #333;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 40px;
+      font-weight: bold;
+
+    }
+  </style>
 </head>
 
 <body>
+  <main>
+    demo page body
+  </main>
   <vocechat-widget>
     <p>This is child content 2</p>
   </vocechat-widget>
