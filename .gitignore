@@ -2,7 +2,8 @@
 /lib/
 /dist/
 /test/
-*/**/.DS_Store
+.DS_Store
+**/.DS_Store
 custom-elements.json
 # top level source
 vocechat-widget.js

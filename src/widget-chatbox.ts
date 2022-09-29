@@ -1,15 +1,19 @@
 import {LitElement, html, css} from 'lit';
-import {customElement} from 'lit/decorators.js';
+import {customElement, property, query} from 'lit/decorators.js';
 // import {animate} from '@lit-labs/motion.js';
 import {unsafeSVG} from 'lit/directives/unsafe-svg.js';
-import {ICON_EMAIL, ICON_TWITTER, ICON_SEND} from './constants';
-@customElement('vocechat-chatbox')
-class VocechatChat extends LitElement {
+import {ifDefined} from 'lit/directives/if-defined.js';
+import {repeat} from 'lit/directives/repeat.js';
+import {ICON_SEND} from './constants';
+import './widget-contacts';
+import './widget-message';
+import msgs from './mock.msg.list';
+@customElement('widget-chatbox')
+class WidgetChatbox extends LitElement {
   static override styles = css`
     :host {
-      opacity: 0;
-      /* display: none; */
-      /* visibility: hidden; */
+      pointer-events: auto;
+      /* opacity: 0; */
       font-family: system-ui, -apple-system, BlinkMacSystemFont, Segoe UI,
         Roboto, Oxygen, Ubuntu, Cantarell, Open Sans, Helvetica Neue, sans-serif;
       position: relative;
@@ -27,8 +31,6 @@ class VocechatChat extends LitElement {
     :host(.visible) {
       pointer-events: auto;
       opacity: 1;
-      /* display: block; */
-      /* visibility: visible; */
     }
     .chat_box {
       height: 100%;
@@ -57,43 +59,22 @@ class VocechatChat extends LitElement {
     /* 信息流容器 */
     .feed {
       flex: 1;
-      /* height: 100%; */
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      height: 100%;
+      padding: 0 12px 10px 12px;
+    }
+    .feed::-webkit-scrollbar {
+      display: none;
     }
     /* 底部工具栏 */
     .opts {
       display: flex;
       align-items: center;
       gap: 20px;
-    }
-    /* 工具栏：链接 */
-    .opts .links {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .opts .links .contact {
-      width: 36px;
-      position: relative;
-      display: flex;
-    }
-    .opts .links .contact:after {
-      opacity: 0;
-      position: absolute;
-      top: -80%;
-      left: 50%;
-      transform: translateX(-50%);
-      content: attr(data-tip);
-      padding: 8px;
-      border-radius: 7px;
-      background-color: #000;
-      color: #fff;
-      font-size: 14px;
-      line-height: 1;
-      font-weight: 500;
-      /* transition: all 0.5s ease-in-out; */
-    }
-    .opts .links .contact:hover:after {
-      opacity: 1;
     }
     /* 工具栏：输入组件 */
     .opts .input {
@@ -133,26 +114,62 @@ class VocechatChat extends LitElement {
       fill: #0078ff;
     }
   `;
+  @property()
+  msgs = msgs;
 
+  @query('.feed', true) _feed!: HTMLDivElement;
+  @query('input', true) _input!: HTMLInputElement;
+  private _sendMsg(e: Event) {
+    if (!this._input.value.trim()) return;
+    this.msgs = [
+      ...this.msgs,
+      {
+        mid: new Date().getTime(),
+        message: this._input.value.trim(),
+        myself: true,
+      },
+    ];
+    this._input.value = '';
+    console.log(
+      'scroll',
+      this._feed,
+      this._feed.scrollTop,
+      this._feed.scrollHeight
+    );
+    setTimeout(() => {
+      const lastMsgEle = this._feed.querySelector('widget-message:last-child');
+      if (lastMsgEle) {
+        lastMsgEle.scrollIntoView({behavior: 'smooth', block: 'end'});
+      }
+    }, 100);
+  }
   override render() {
     return html` <section class="chat_box">
-      <div class="feed">message feed</div>
+      <div class="feed">
+        ${repeat(
+          this.msgs,
+          (m) => m.mid,
+          (msg, idx) => html`
+            <widget-message
+              seq="${idx}"
+              name="${ifDefined(msg.name)}"
+              avatar="${ifDefined(msg.avatar)}"
+              message="${msg.message}"
+              myself="${ifDefined(msg.myself)}"
+            ></widget-message>
+          `
+        )}
+      </div>
       <div class="opts">
-        <div class="links">
-          <a
-            href="mailto://yang@d.com"
-            data-tip="yanggc888@163.com"
-            class="contact mail"
-          >
-            ${unsafeSVG(ICON_EMAIL)}
-          </a>
-          <a href="//fds.com" data-tip="@wsygc" class="contact twitter">
-            ${unsafeSVG(ICON_TWITTER)}
-          </a>
-        </div>
+        <widget-contacts
+          email="yanggc888@163.com"
+          twitter="wsygc"
+        ></widget-contacts>
         <div class="input">
-          <input type="text" placeholder="Send Message" class="send" />
-          <button class="send">${unsafeSVG(ICON_SEND)}</button>
+          <input autofocus placeholder="Send Message" class="send" />
+          <button class="send" @click="${this._sendMsg}">
+            ${unsafeSVG(ICON_SEND)}
+          </button>
         </div>
       </div>
       <span class="tip"
@@ -164,6 +181,6 @@ class VocechatChat extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'vocechat-chatbox': VocechatChat;
+    'widget-chatbox': WidgetChatbox;
   }
 }

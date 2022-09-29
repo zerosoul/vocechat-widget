@@ -2,7 +2,7 @@ import {LitElement, html, css} from 'lit';
 // import {cache} from 'lit/directives/cache.js';
 import {customElement, property} from 'lit/decorators.js';
 import {unsafeSVG} from 'lit/directives/unsafe-svg.js';
-import './vocechat-chatbox';
+import './widget-chatbox';
 import {ICON_CHAT, ICON_CLOSE_CHAT} from './constants';
 // import wtf from './assets/add.svg';
 @customElement('vocechat-widget')
@@ -64,9 +64,9 @@ export class VoceChatWidget extends LitElement {
   override render() {
     return html`
       <aside class="wrapper">
-        <vocechat-chatbox
+        <widget-chatbox
           class="${this.visible ? 'visible' : ''}"
-        ></vocechat-chatbox>
+        ></widget-chatbox>
         <button class="toggler" @click=${this._toggleVisibleHandler}>
           ${this.visible ? unsafeSVG(ICON_CLOSE_CHAT) : unsafeSVG(ICON_CHAT)}
         </button>
